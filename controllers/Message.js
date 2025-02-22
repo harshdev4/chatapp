@@ -17,11 +17,16 @@ export const latestMessage = async (req, res)=>{
     
     try {
         const messages = await Message.find({ $or:[{sender: senderId, receiver: receiverId}, {sender: receiverId, receiver: senderId}],}).sort({timestamp: -1});
+        
         if (messages.length > 0) {
+            console.log(messages[0]);
+            console.log();
             return res.status(200).json({message: messages[0]});
         }
         else{
-            return res.status(200).json({message: ''});
+            console.log({sender: senderId, receiver: receiverId, message: ''});
+            console.log();
+            return res.status(200).json({sender: senderId, receiver: receiverId, message: ''});
         }
         
     } catch (error) {

@@ -11,22 +11,18 @@ export const MessageContext = createContext({
 const MessageContextProvider = ({children}) =>{
     const [latestMessage, setLatestMessage] = useState([]);
     const {userData} = useContext(UserContext);
-    const fetchLatestMessage = async (receiverId, message)=>{
+    const fetchLatestMessage = async (receiverId)=>{
         try {
           const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/message/latestMessage/${receiverId}`, {withCredentials: true});
           const msg = response.data.message;
-          if ((!msg.receiver || !msg.sender || !msg.message) && !message) {
-            return
-          }
-
-
           const obj = {
-            receiver: msg.receiver ? (userData.userId == msg.receiver ? msg.sender : msg.receiver) : receiverId,
-            message: message ? message : msg.message
+            me: msg.sender == userData.userId ? msg.sender : msg.receiver,
+            user: msg.sender == userData.userId ? msg.receiver : msg.sender,
+            message: msg.message
           }
 
           setLatestMessage((prev) => {
-            const updatedMessages = prev.filter((m) => m.receiver !== obj.receiver);
+            const updatedMessages = prev.filter((m) => m.user !== obj.user);
             return [...updatedMessages, obj];
           });
         } catch (error) {

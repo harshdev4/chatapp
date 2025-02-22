@@ -52,7 +52,7 @@ const ChatBox = () => {
         fetchMessages();
 
         const handleIncomingMessages = (message)=>{
-            fetchLatestMessage(message.sender, message.message);
+            // fetchLatestMessage(message.sender, message.message);
             if (message.sender == selectedUser) {
                 setMessages((prev)=> ([...prev, message]))
             }
@@ -79,7 +79,7 @@ const ChatBox = () => {
 
         const setMessage = (message)=>{
             setMessages(prev => [...prev, message]);
-            fetchLatestMessage(selectedUserInfo.userId, message.message);
+            // fetchLatestMessage(selectedUserInfo.userId, message.message);
         }
     
         if (selectedUser) {
@@ -114,52 +114,52 @@ const ChatBox = () => {
         
         socket.emit('sendMessage', message);
         setMessages(prev => [...prev, message]);
-        fetchLatestMessage(selectedUserInfo.userId, message.message);
+        // fetchLatestMessage(selectedUserInfo.userId, message.message);
         messageRef.current.value = '';
     }
 
   return (
-    <div className='relative flex flex-col w-full h-svh bg-[#646e6c1c] overflow-y-hidden'>
-    {selectedUserInfo.username && (
-        <>
-            {/* Top Profile Section */}
-            <div className='sticky top-0 w-full flex items-center space-x-3 bg-[#2d5348] text-white p-2 shadow-md shadow-[#302f2fbe]'>
-                <FaArrowLeft className='block sm:hidden' onClick={() => setSelectedUser()} />
-                <div className='rounded-[50%] w-[50px] h-[50px] border border-[#00000036]'>
-                    <img className='rounded-[50%] w-full h-full object-cover' 
-                         src={`${selectedUserInfo.profilePic.slice(0, 50)}w_100,h_100/${selectedUserInfo.profilePic.slice(50,)}`} 
-                         alt="selectedUser" />
-                </div>
-                <div>
-                    <h2 className='font-bold text-[1.1rem]'>{selectedUserInfo.name}</h2>
-                    <span className='text-[12px]'>{userStatus}</span>
-                </div>
-            </div>
+    <div className="flex flex-col w-full h-svh bg-[#646e6c1c]">
+  {selectedUserInfo.username && (
+    <>
+      {/* Top Profile Section */}
+      <div className="sticky top-0 w-full flex items-center space-x-3 bg-[#2d5348] text-white p-2 shadow-md shadow-[#302f2fbe] z-10">
+        <FaArrowLeft className="block sm:hidden" onClick={() => setSelectedUser()} />
+        <div className="rounded-[50%] w-[50px] h-[50px] border border-[#00000036]">
+          <img className="rounded-[50%] w-full h-full object-cover" 
+               src={`${selectedUserInfo.profilePic.slice(0, 50)}w_100,h_100/${selectedUserInfo.profilePic.slice(50,)}`} 
+               alt="selectedUser" />
+        </div>
+        <div>
+          <h2 className="font-bold text-[1.1rem]">{selectedUserInfo.name}</h2>
+          <span className="text-[12px]">{userStatus}</span>
+        </div>
+      </div>
 
-            {/* Message List */}
-            <ul className='w-full overflow-y-auto p-2 flex-1'>
-                {messages.map((message, index) => (
-                    <li key={index} className={`text-white text-[1.1rem] mb-3 flex ${message.sender == userData.userId ? 'justify-end' : 'justify-start'}`}>
-                        <span className={`max-w-[50%] break-words py-1 px-3 rounded-[12px] ${message.sender == userData.userId ? 'bg-[#358d64]' : 'text-left bg-[#777373]'}`}>
-                            {message.message}
-                        </span>
-                    </li>
-                ))}
-                <div ref={messagesEndRef}></div>
-            </ul>
+      {/* Message List */}
+      <ul className="flex-1 overflow-y-auto p-2">
+        {messages.map((message, index) => (
+          <li key={index} className={`text-white text-[1.1rem] mb-3 flex ${message.sender == userData.userId ? 'justify-end' : 'justify-start'}`}>
+            <span className={`max-w-[50%] break-words py-1 px-3 rounded-[12px] ${message.sender == userData.userId ? 'bg-[#358d64]' : 'text-left bg-[#777373]'}`}>
+              {message.message}
+            </span>
+          </li>
+        ))}
+        <div ref={messagesEndRef}></div>
+      </ul>
 
-            {/* Bottom Input Section */}
-            <div className='w-full bg-[#2d5348] p-[7px]'>
-                <form className='relative w-full' onSubmit={handleSubmit}>
-                    <input ref={messageRef} type="text" name="message" placeholder='Type a message' autoFocus
-                           className='w-full p-2 pr-[45px] border border-[#00000067] rounded-[10px] outline-0 bg-[#fff] text-[#000]' />
-                    <button type="submit" className="absolute top-1/2 translate-y-[-50%] right-3 text-xl cursor-pointer p-1">
-                        <IoMdSend className='text-[#2d5348]' />
-                    </button>
-                </form>
-            </div>
-        </>
-    )}
+      {/* Bottom Input Section (Sticky) */}
+      <div className="sticky bottom-0 w-full bg-[#2d5348] p-[7px]">
+        <form className="relative w-full" onSubmit={handleSubmit}>
+          <input ref={messageRef} type="text" name="message" placeholder="Type a message" autoFocus
+                 className="w-full p-2 pr-[45px] border border-[#00000067] rounded-[10px] outline-0 bg-[#fff] text-[#000]" />
+          <button type="submit" className="absolute top-1/2 translate-y-[-50%] right-3 text-xl cursor-pointer p-1">
+            <IoMdSend className="text-[#2d5348]" />
+          </button>
+        </form>
+      </div>
+    </>
+  )}
 </div>
 
   )
