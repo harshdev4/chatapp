@@ -23,7 +23,7 @@ const User = (props) => {
       </div>
       <div className='grid border-t-1 border-[#cdc9c9] py-3'>
         <h3 className='font-bold'>{props.name}</h3>
-        <p className='text-[13px]  md:block truncate w-[140px]'>{latestMessage.length > 0 && latestMessage.find((msg)=> msg.receiver == props.userId)?.message}</p>
+        <p className='text-[13px]  md:block truncate w-[140px]'>{latestMessage.length > 0 && latestMessage.find((msg)=> msg.user == props.userId)?.message}</p>
         </div>
     </div>
     </>
