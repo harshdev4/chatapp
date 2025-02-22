@@ -4,6 +4,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from "../../context/UserContext";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const fileInputRef = useRef(null);
@@ -61,7 +62,12 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userdata.profilePic || !userdata.username || !userdata.name || !userdata.password) {
+      toast.error("All field are required");
       return;
+    }
+    if (userdata.password.length < 8) {
+      toast.error("Password must contain atleast 8 characters");
+      
     }
     const formData = new FormData();
     formData.append("profilePic", userdata.profilePic); // Append file
