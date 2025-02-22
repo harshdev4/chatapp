@@ -27,7 +27,7 @@ const ChatBox = () => {
 
         const fetchSelectedUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/api/user/fetchSelectedUser/${selectedUser}`, {withCredentials: true});
+                const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/user/fetchSelectedUser/${selectedUser}`, {withCredentials: true});
                 if (response.status === 200) {
                     setSelectedUserInfo(response.data.user);
                 }
@@ -38,7 +38,7 @@ const ChatBox = () => {
 
         const fetchMessages = async ()=>{
             try {
-                const response = await axios.get(`http://localhost:3000/api/message/fetchMessages?sender=${userData.userId}&receiver=${selectedUser}`, {withCredentials: true});
+                const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/message/fetchMessages?sender=${userData.userId}&receiver=${selectedUser}`, {withCredentials: true});
                 if (response.status === 200) {
                     const allMessages = response.data.allMessages;
                     allMessages.sort((a,b)=> new Date(a.timestamp) - new Date(b.timestamp));
