@@ -149,7 +149,7 @@ const ChatBox = () => {
       </ul>
 
       {/* Bottom Input Section (Sticky) */}
-      <div className="sticky bottom-0 w-full bg-[#2d5348] p-[7px]">
+      <div className="fixed bottom-0 w-full bg-[#2d5348] p-[7px]">
         <form className="relative w-full" onSubmit={handleSubmit}>
           <input ref={messageRef} type="text" name="message" placeholder="Type a message" autoFocus
                  className="w-full p-2 pr-[45px] border border-[#00000067] rounded-[10px] outline-0 bg-[#fff] text-[#000]" />
