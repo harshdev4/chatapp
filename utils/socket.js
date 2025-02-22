@@ -52,6 +52,14 @@ const setupSocket = (server)=>{
                         socket.to(socketone).emit('sendMessage', {sender, receiver, message});
                     }
                 })
+                me.socketId.forEach((socketone)=>{
+                    if (socketone !== socket.id) {
+                        socket.to(socketone).emit('latestSendMessage', {sender, receiver, message});
+                    }
+                    else{
+                        socket.emit('latestSendMessage', {sender, receiver, message});
+                    }
+                });
                 const user = await User.findById(receiver);
                 const receiverSocketIds = user.socketId;
                 if (receiverSocketIds.length > 0) {
@@ -73,10 +81,7 @@ const setupSocket = (server)=>{
             try {
                 const user = await User.findById(userId);
                 let status;
-                if (user.socketId.length > 0) {
-                    status = user.socketId ? 'Online' : 'Offline';
-                }
-                
+                status = user.socketId.length > 0 ? 'Online' : 'Offline';
                 socket.emit('getStatus', { status });
             } catch (error) {
                 console.error("Error in operations:", error);

@@ -50,8 +50,13 @@ const UserList = () => {
 
         const socket = getSocket();
         socket.on('receiveMessage', fetch);
+        socket.on('latestSendMessage', fetch);
 
         fetchUsers();
+        return ()=>{
+            socket.off('receiveMessage', fetch);
+            socket.off('latestSendMessage', fetch);
+        }
     }, []);
 
     const handleLogout = async () => {
