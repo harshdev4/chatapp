@@ -16,6 +16,8 @@ const ChatBox = () => {
         socketId: undefined
     });
 
+    const audio = new Audio('/sounds/send.mp3');
+
     const {fetchLatestMessage} = useContext(MessageContext);
     const [messages, setMessages] = useState([]);
     const [userStatus, setUserStatus] = useState([]);
@@ -114,7 +116,7 @@ const ChatBox = () => {
         
         socket.emit('sendMessage', message);
         setMessages(prev => [...prev, message]);
-        // fetchLatestMessage(selectedUserInfo.userId, message.message);
+        audio.play();
         messageRef.current.value = '';
     }
 

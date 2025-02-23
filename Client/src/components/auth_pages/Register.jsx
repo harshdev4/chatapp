@@ -99,7 +99,7 @@ const Register = () => {
             src={selectedImg}
             name="image"
             alt="Upload Profile"
-            className="w-[100px] h-[100px] object-contain shadow-[0_15px_15px_#63030340] rounded-[50%]"
+            className="w-[100px] h-[100px] object-cover shadow-[0_15px_15px_#63030340] rounded-[50%]"
           />
           <MdFileUpload className="absolute bottom-1 right-1 bg-gray-100 p-1 rounded-full text-gray-600 text-xl" />
           <input type="file" ref={fileInputRef} className="hidden" required onChange={handleFileSubmit}/>
