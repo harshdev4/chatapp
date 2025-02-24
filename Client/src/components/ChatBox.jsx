@@ -153,7 +153,7 @@ const ChatBox = () => {
       {/* Bottom Input Section (Sticky) */}
       <div className="fixed bottom-0 w-full bg-[#2d5348] p-[7px]">
         <form className="relative w-full" onSubmit={handleSubmit}>
-          <input ref={messageRef} type="text" name="message" placeholder="Type a message" autoFocus autocomplete="off"
+          <input ref={messageRef} type="text" name="message" placeholder="Type a message" autoFocus autoCmplete="off"
                  className="w-full p-2 pr-[45px] border border-[#00000067] rounded-[10px] outline-0 bg-[#fff] text-[#000]" />
           <button type="submit" className="absolute top-1/2 translate-y-[-50%] right-3 text-xl cursor-pointer p-1">
             <IoMdSend className="text-[#2d5348]" />
