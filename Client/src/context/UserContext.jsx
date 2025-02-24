@@ -15,7 +15,8 @@ const UserContextProvider = ({children}) => {
         userId: undefined,
         username: '',
         name:'',
-        profilePic: ''
+        profilePic: '',
+        joined: ''
     });
 
     const [selectedUser, setSelectedUser] = useState();

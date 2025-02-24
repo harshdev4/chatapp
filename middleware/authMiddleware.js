@@ -18,7 +18,8 @@ export const protectedRoute = async (req, res, next)=>{
             userId: decode.user.userId,
             username: decode.user.username,
             name: decode.user.name,
-            profilePic: user.profilePic
+            profilePic: user.profilePic,
+            joined: user.timestamp
         }
         
         req.user = userWithProfile;

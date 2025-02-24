@@ -107,7 +107,7 @@ const UserList = () => {
             <User 
                 key={user._id}
                 userId={user._id} 
-                userImage={`${user.profilePic.slice(0, 50)}w_100,h_100/${user.profilePic.slice(50,)}`} 
+                userImage={`${user.profilePic.slice(0, 50)}w_100,h_150/${user.profilePic.slice(50,)}`} 
                 name={user.name} 
             />
         ))

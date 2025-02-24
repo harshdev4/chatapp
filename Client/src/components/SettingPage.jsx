@@ -82,7 +82,7 @@ const SettingPage = () => {
             </div>
             <div className='rounded-[12px] flex items-center p-3 bg-[#68666650] text-[#4b4a4a]'>{userData.username}</div>
             <div className='rounded-[12px] flex items-center p-3 bg-[#68666650] text-[#4b4a4a]'>{userData.name}</div>
-            <div className='flex justify-between px-2'><span className='text-[#2c2c2c]'>Member Since </span><span className='text-[#424242] text-[0.9rem]'>18-02-2025</span></div>
+            <div className='flex justify-between px-2'><span className='text-[#2c2c2c]'>Member Since </span><span className='text-[#424242] text-[0.9rem]'>{userData.joined.split('T')[0]}</span></div>
         </div>
       
     </div>}</>

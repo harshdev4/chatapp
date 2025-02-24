@@ -48,7 +48,8 @@ export const register = async (req, res)=>{
             userId: user._id,
             username,
             name,
-            profilePic: user.profilePic
+            profilePic: user.profilePic,
+            joined: user.timestamp
         };
         const token = generateToken(tokenUser);
         res.cookie('access_token', token, {maxAge: 7*24*60*60*1000, httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax'})
@@ -74,7 +75,8 @@ export const login = async (req, res)=>{
                     userId: user._id,
                     username,
                     name: user.name,
-                    profilePic: user.profilePic
+                    profilePic: user.profilePic,
+                    joined: user.timestamp
                 };
                 const token = generateToken(tokenUser);
                 res.cookie('access_token', token, {maxAge: 7*24*60*60*1000, httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'})
