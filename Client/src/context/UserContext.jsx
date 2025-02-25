@@ -50,7 +50,7 @@ const UserContextProvider = ({children}) => {
     const fetchUsers = async () =>{
         setIsLoading(true)
         try {
-            const response = await axios.get('http://localhost:3000/api/user/fetchUsers', {withCredentials: true});
+            const response = await axios.get('https://chatapp-1ox3.onrender.com/api/user/fetchUsers', {withCredentials: true});
             if (response.status === 200) {
                 setUsers(response.data.users);
             }
