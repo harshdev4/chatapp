@@ -13,7 +13,6 @@ const User = (props) => {
     const handleUserSelection = (userId)=>{
       setSelectedUser(userId);
     }
-    
 
   return (
    <>

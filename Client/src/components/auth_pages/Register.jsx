@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 const Register = () => {
   const fileInputRef = useRef(null);
-  const passwordInputRef = useRef(null);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [selectedImg, setSelectedImg] = useState("/images/uploadProfile.png");
   const [userdata, setUserData] = useState({
     profilePic: "",
@@ -16,6 +16,7 @@ const Register = () => {
     name: "",
     password: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
@@ -40,20 +41,6 @@ const Register = () => {
     fileInputRef.current.click();
   };
 
-  const togglePassword = (e) => {
-    const passwordInput = passwordInputRef.current;
-    if (passwordInput.type == "password") {
-      passwordInput.type = "text";
-      document.querySelector(".openEye").classList.remove("hidden");
-      document.querySelector(".closeEye").classList.add("hidden");
-    }
-    else{
-      passwordInput.type = "password"
-      document.querySelector(".openEye").classList.add("hidden");
-      document.querySelector(".closeEye").classList.remove("hidden");
-    }
-  }
-
   const handleInputChange = (e) => {
     const {name, value} = e.target;
     setUserData((prev)=> ({...prev, [name]: value}));
@@ -67,10 +54,12 @@ const Register = () => {
     }
     if (userdata.password.length < 8) {
       toast.error("Password must contain atleast 8 characters");
+      return;
       
     }
+    setIsLoading(true);
     const formData = new FormData();
-    formData.append("profilePic", userdata.profilePic); // Append file
+    formData.append("profilePic", userdata.profilePic);
     formData.append("username", userdata.username);
     formData.append("name", userdata.name);
     formData.append("password", userdata.password);
@@ -84,11 +73,14 @@ const Register = () => {
     } catch (error) {
       console.log(error.response?.data?.message);
     }
+    finally{
+      setIsLoading(false);
+    }
   }
 
   return (
     <div className="flex justify-center w-full h-[100vh] py-[15px] bg-[url('/images/authBg.jpg')] bg-cover">
-      
+      {isLoading && <div className="absolute z-10 top-[50%] left-[50%] translate-[-50%] w-[70px] h-[70px] border-b-3 border-l-3 rounded-[50%] animate-spin"> </div> }
       <div className="flex flex-col py-[20px] w-full sm:w-1/2 gap-y-[10px] px-[10px]">
         <h1 className="text-[#25433a] text-[2.4rem] md:text-[3rem] font-bold text-center">Welcome To Echo</h1>
         {/* Profile Picture */}
@@ -108,9 +100,10 @@ const Register = () => {
         <input type="text" name="username" value={userdata.username} onChange={handleInputChange} placeholder="Username" className=" bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
         <input type="text" name="name" value={userdata.name} onChange={handleInputChange} placeholder="Full name" className="bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
         <div className="relative">
-          <input ref={passwordInputRef} name="password" value={userdata.password} onChange={handleInputChange} type="password" placeholder="Password" className="w-full bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
-          <FaRegEye className="absolute right-2 top-1 translate-y-1 cursor-pointer hidden openEye p-2 text-[35px]" onClick={togglePassword}/>
-          <FaRegEyeSlash className="absolute right-2 top-1 translate-y-1 cursor-pointer closeEye p-2 text-[35px]" onClick={togglePassword}/>
+          <input name="password" value={userdata.password} onChange={handleInputChange} type="password" placeholder="Password" className="w-full bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
+          {!isPasswordVisible ?
+          <FaRegEyeSlash className="absolute right-2 top-1 translate-y-1 cursor-pointer p-2 text-[35px]" onClick={()=> setIsPasswordVisible(!isPasswordVisible)}/>
+          : <FaRegEye className="absolute right-2 top-1 translate-y-1 cursor-pointer p-2 text-[35px]" onClick={()=> setIsPasswordVisible(!isPasswordVisible)}/>}
         </div>
         <button className="w-[80%] p-3 bg-[#31594ebd] text-[white] mx-auto font-semibold border border-gray-300 rounded-lg shadow-md hover:bg-[#31594e] hover:text-white transition duration-300" onClick={handleSubmit}>Sign Up</button>
         <p className="text-sm text-[#002c20] mt-3 text-center">

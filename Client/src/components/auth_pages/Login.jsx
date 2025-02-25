@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { UserContext } from "../../context/UserContext";
 import toast from "react-hot-toast";
+
 const Login = () => {
   const navigate = useNavigate();
-  const passwordInputRef = useRef(null);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [userdata, setUserData] = useState({
       username: "",
       password: ""
@@ -20,20 +21,6 @@ const Login = () => {
       navigate('/');
     }
   }, [userContext.userData?.userId]);
-
-  const togglePassword = (e) => {
-    const passwordInput = passwordInputRef.current;
-    if (passwordInput.type == "password") {
-      passwordInput.type = "text";
-      document.querySelector(".openEye").classList.remove("hidden");
-      document.querySelector(".closeEye").classList.add("hidden");
-    }
-    else{
-      passwordInput.type = "password"
-      document.querySelector(".openEye").classList.add("hidden");
-      document.querySelector(".closeEye").classList.remove("hidden");
-    }
-  }
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
@@ -78,9 +65,10 @@ const Login = () => {
             <div className="flex flex-col gap-y-[12px] justify-center h-[70%] ">
             <input type="text" name="username" value={userdata.username} onChange={handleInputChange} placeholder="Username" className=" bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
             <div className="relative">
-              <input ref={passwordInputRef} type="password" name="password" value={userdata.password} onChange={handleInputChange} placeholder="Password" className="w-full bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
-              <FaRegEye className="absolute right-2 top-1 translate-y-1 cursor-pointer hidden openEye p-2 text-[35px]" onClick={togglePassword}/>
-              <FaRegEyeSlash className="absolute right-2 top-1 translate-y-1 cursor-pointer closeEye p-2 text-[35px]" onClick={togglePassword}/>
+              <input type="password" name="password" value={userdata.password} onChange={handleInputChange} placeholder="Password" className="w-full bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
+              {!isPasswordVisible ?
+                <FaRegEyeSlash className="absolute right-2 top-1 translate-y-1 cursor-pointer p-2 text-[35px]" onClick={()=> setIsPasswordVisible(!isPasswordVisible)}/>
+              : <FaRegEye className="absolute right-2 top-1 translate-y-1 cursor-pointer p-2 text-[35px]" onClick={()=> setIsPasswordVisible(!isPasswordVisible)}/>}
             </div>
             <button className="w-[80%] p-3 bg-[#31594ebd] text-[white] mx-auto font-semibold border border-gray-300 rounded-lg shadow-md hover:bg-[#31594e] hover:text-white transition duration-300" onClick={handleSubmit}>Login</button>
             <p className="text-sm text-[#002c20] mt-3 text-center">

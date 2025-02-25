@@ -3,7 +3,6 @@ import { UserContext } from '../context/UserContext'
 import { IoMdSend } from "react-icons/io";
 import axios from 'axios';
 import { getSocket } from './Socket';
-import { MessageContext } from '../context/MessageContext';
 import { FaArrowLeft } from "react-icons/fa";
 
 const ChatBox = () => {
@@ -17,11 +16,10 @@ const ChatBox = () => {
     });
 
     const audio = new Audio('/sounds/send.mp3');
-
-    const {fetchLatestMessage} = useContext(MessageContext);
     const [messages, setMessages] = useState([]);
     const [userStatus, setUserStatus] = useState([]);
     const messageRef = useRef();
+    const messagesEndRef = useRef(null);
 
     const socket = getSocket();
     
@@ -50,11 +48,11 @@ const ChatBox = () => {
                 console.log(error);
             }
         }
+
         fetchSelectedUser();
         fetchMessages();
 
         const handleIncomingMessages = (message)=>{
-            // fetchLatestMessage(message.sender, message.message);
             if (message.sender == selectedUser) {
                 setMessages((prev)=> ([...prev, message]))
             }
@@ -81,7 +79,6 @@ const ChatBox = () => {
 
         const setMessage = (message)=>{
             setMessages(prev => [...prev, message]);
-            // fetchLatestMessage(selectedUserInfo.userId, message.message);
         }
     
         if (selectedUser) {
@@ -95,9 +92,6 @@ const ChatBox = () => {
             socket.off("sendMessage", setMessage)
         };
     }, [selectedUser]);
-    
-
-    const messagesEndRef = useRef(null);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView();
