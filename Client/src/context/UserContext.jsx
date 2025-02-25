@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import toast from 'react-hot-toast';
 
 export const UserContext = createContext({
     userData: {},
@@ -7,7 +8,12 @@ export const UserContext = createContext({
     setUserData: ()=>{},
     selectedUser: undefined,
     setSelectedUser: ()=>{},
-    isLoggedIn: ()=>{}
+    isLoggedIn: ()=>{},
+    users: [],
+    setUsers: ()=>{},
+    fetchUsers: ()=>{},
+    isLoading: false, 
+    setIsLoading: ()=>{}
 });
 
 const UserContextProvider = ({children}) => {
@@ -19,8 +25,10 @@ const UserContextProvider = ({children}) => {
         joined: ''
     });
 
+    const [users, setUsers] = useState([]); 
     const [selectedUser, setSelectedUser] = useState();
     const [isChecking, setIsChecking] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
      
     const isLoggedIn = async () => {
         setIsChecking(true);
@@ -39,12 +47,29 @@ const UserContextProvider = ({children}) => {
         }
     }
 
+    const fetchUsers = async () =>{
+        setIsLoading(true)
+        try {
+            const response = await axios.get('http://localhost:3000/api/user/fetchUsers', {withCredentials: true});
+            if (response.status === 200) {
+                setUsers(response.data.users);
+            }
+        } catch (error) {
+            console.log(error.response?.data?.message);
+            toast.error(error.response?.data?.message);
+            
+        }
+        finally{
+            setIsLoading(false);
+        }
+    }
+
     useEffect(()=>{
         isLoggedIn();
     }, []);
 
     return(
-        <UserContext.Provider value={{userData, setUserData, isChecking, selectedUser, setSelectedUser, isLoggedIn}}>{children}</UserContext.Provider>
+        <UserContext.Provider value={{isLoading, setIsLoading, userData, setUserData, isChecking, selectedUser, setSelectedUser, isLoggedIn, users, setUsers, fetchUsers}}>{children}</UserContext.Provider>
     )
 };
 

@@ -6,35 +6,14 @@ import { IoIosLogOut } from "react-icons/io";
 import { getSocket } from './Socket';
 import { IoMdSettings } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { MessageContext } from '../context/MessageContext';
-import { fetchMessages } from '../../../controllers/Message';
 
 const UserList = () => {
-    const [users, setUsers] = useState([]);
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);
     const {setLatestMessage} = useContext(MessageContext);
-    const {userData, setUserData, setSelectedUser} = useContext(UserContext);
+    const {userData, setUserData, setSelectedUser, users, fetchUsers, isLoading} = useContext(UserContext);
 
     useEffect(()=>{
-        setIsLoading(true);
-        const fetchUsers = async () =>{
-            try {
-                const response = await axios.get('https://chatapp-1ox3.onrender.com/api/user/fetchUsers', {withCredentials: true});
-                if (response.status === 200) {
-                    setUsers(response.data.users);
-                }
-            } catch (error) {
-                console.log(error.response?.data?.message);
-                toast.error(error.response?.data?.message);
-                
-            }
-            finally{
-                setIsLoading(false);
-            }
-        }
-
         const fetch = (msg)=>{
             const obj = {
                 me: msg.sender == userData.userId ? msg.sender : msg.receiver,
@@ -47,12 +26,13 @@ const UserList = () => {
                 return [...updatedMessages, obj];
             });
         }
+        
+        fetchUsers();
 
         const socket = getSocket();
         socket.on('receiveMessage', fetch);
         socket.on('latestSendMessage', fetch);
 
-        fetchUsers();
         return ()=>{
             socket.off('receiveMessage', fetch);
             socket.off('latestSendMessage', fetch);
