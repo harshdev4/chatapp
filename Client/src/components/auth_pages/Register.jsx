@@ -100,7 +100,7 @@ const Register = () => {
         <input type="text" name="username" value={userdata.username} onChange={handleInputChange} placeholder="Username" className=" bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
         <input type="text" name="name" value={userdata.name} onChange={handleInputChange} placeholder="Full name" className="bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
         <div className="relative">
-          <input name="password" value={userdata.password} onChange={handleInputChange} type="password" placeholder="Password" className="w-full bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
+          <input name="password" value={userdata.password} onChange={handleInputChange} type={isPasswordVisible ? 'text' : 'password'} placeholder="Password" className="w-full bg-white p-3 border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400" required/>
           {!isPasswordVisible ?
           <FaRegEyeSlash className="absolute right-2 top-1 translate-y-1 cursor-pointer p-2 text-[35px]" onClick={()=> setIsPasswordVisible(!isPasswordVisible)}/>
           : <FaRegEye className="absolute right-2 top-1 translate-y-1 cursor-pointer p-2 text-[35px]" onClick={()=> setIsPasswordVisible(!isPasswordVisible)}/>}
