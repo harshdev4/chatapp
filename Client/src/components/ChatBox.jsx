@@ -83,7 +83,6 @@ const ChatBox = () => {
 
     useEffect(()=>{
       socket.emit('messageSeen', {me: userData.userId, user: selectedUser});
-      console.log('message sent by', selectedUser, 'is seen by me');
       
     }, [selectedUser]);
 
