@@ -4,6 +4,7 @@ import { IoMdSend } from "react-icons/io";
 import axios from 'axios';
 import { getSocket } from './Socket';
 import { FaArrowLeft } from "react-icons/fa";
+import { LiaCheckDoubleSolid } from "react-icons/lia";
 
 const ChatBox = () => {
     const {selectedUser, userData, setSelectedUser} = useContext(UserContext);
@@ -15,7 +16,7 @@ const ChatBox = () => {
         socketId: undefined
     });
 
-    const audio = new Audio('/sounds/send.mp3');
+    const audio = useRef(new Audio('/sounds/send.mp3'));
     const [messages, setMessages] = useState([]);
     const [userStatus, setUserStatus] = useState([]);
     const messageRef = useRef();
@@ -54,7 +55,8 @@ const ChatBox = () => {
 
         const handleIncomingMessages = (message)=>{
             if (message.sender == selectedUser) {
-                setMessages((prev)=> ([...prev, message]))
+                setMessages((prev)=> ([...prev, message]));
+                socket.emit('messageSeen', {me: userData.userId, user: selectedUser});
             }
         }
 
@@ -63,6 +65,26 @@ const ChatBox = () => {
         return () => {
             socket.off('receiveMessage', handleIncomingMessages);
         };
+    }, [selectedUser]);
+
+    useEffect(()=>{
+      const handleSeen = () =>{
+          const tempMessages = messages.map((message) => ({
+              ...message,
+              seen: message.sender === userData.userId ? true : false
+          }));
+          setMessages(tempMessages);
+      }
+      socket.on('messageSeen', handleSeen);
+      return () => {
+          socket.off('messageSeen', handleSeen);
+      }
+    }, [messages]);
+
+    useEffect(()=>{
+      socket.emit('messageSeen', {me: userData.userId, user: selectedUser});
+      console.log('message sent by', selectedUser, 'is seen by me');
+      
     }, [selectedUser]);
 
     useEffect(() => {
@@ -110,7 +132,7 @@ const ChatBox = () => {
         
         socket.emit('sendMessage', message);
         setMessages(prev => [...prev, message]);
-        audio.play();
+        audio.current.play();
         messageRef.current.value = '';
     }
 
@@ -136,8 +158,8 @@ const ChatBox = () => {
       <ul className="flex-1 overflow-y-auto p-2 md:pb-12">
         {messages.map((message, index) => (
           <li key={index} className={`text-white text-[1.1rem] mb-3 flex ${message.sender == userData.userId ? 'justify-end' : 'justify-start'}`}>
-            <span className={`max-w-[50%] break-words py-1 px-3 rounded-[12px] ${message.sender == userData.userId ? 'bg-[#358d64]' : 'text-left bg-[#777373]'}`}>
-              {message.message}
+            <span className={`grid grid-cols-[minmax(20px,100%)_15px] gap-2 items-end max-w-[50%] break-words py-1 px-3 rounded-[12px] ${message.sender == userData.userId ? 'bg-[#358d64]' : 'text-left bg-[#777373]'}`}>
+            {message.message} {message.sender == userData.userId && message.seen && <LiaCheckDoubleSolid className='text-[15px] text-[#7acff9] font-bold'/>}
             </span>
           </li>
         ))}
