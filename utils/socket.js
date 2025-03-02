@@ -91,13 +91,13 @@ const setupSocket = (server)=>{
         socket.on('messageSeen', async ({me, user})=>{
             try {
                 const sender = await User.findById(user);
+                if (sender.socketId.length > 0) {
+                    sender.socketId.forEach(socketId => socket.to(socketId).emit('messageSeen'));
+                }     
                 await Message.updateMany(
                     { sender: user, receiver: me },
                     { $set: { seen: true } }
-                );  
-                if (sender.socketId.length > 0) {
-                    sender.socketId.forEach(socketId => socket.to(socketId).emit('messageSeen'));
-                }              
+                );           
             } catch (error) {
                 console.error('Error in message seen:',error);
             }

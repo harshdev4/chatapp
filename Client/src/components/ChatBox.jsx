@@ -50,20 +50,45 @@ const ChatBox = () => {
             }
         }
 
+        const handleIncomingMessages = (message)=>{
+          if (message.sender == selectedUser) {
+              setMessages((prev)=> ([...prev, message]));
+              socket.emit('messageSeen', {me: userData.userId, user: selectedUser});
+          }
+        }
+
+        const handleStatus = (status) => {
+        if (status.userId) {
+            if (status.userId == selectedUser) {
+                setUserStatus(status.status);
+            }   
+        }
+        else{
+            setUserStatus(status.status);
+        }
+        };
+
+        const setMessage = (message)=>{
+        setMessages(prev => [...prev, message]);
+        }
+        
         fetchSelectedUser();
         fetchMessages();
 
-        const handleIncomingMessages = (message)=>{
-            if (message.sender == selectedUser) {
-                setMessages((prev)=> ([...prev, message]));
-                socket.emit('messageSeen', {me: userData.userId, user: selectedUser});
-            }
+        if (selectedUser) {
+          socket.emit('checkStatus', selectedUser);
+          socket.on('getStatus', handleStatus);
+          socket.on("sendMessage", setMessage)
         }
+
+        socket.emit('messageSeen', {me: userData.userId, user: selectedUser});
 
         socket.on('receiveMessage', handleIncomingMessages);
 
         return () => {
             socket.off('receiveMessage', handleIncomingMessages);
+            socket.off('getStatus', handleStatus);
+            socket.off("sendMessage", setMessage)
         };
     }, [selectedUser]);
 
@@ -75,49 +100,14 @@ const ChatBox = () => {
           }));
           setMessages(tempMessages);
       }
+
+      messagesEndRef.current?.scrollIntoView();
+      
       socket.on('messageSeen', handleSeen);
       return () => {
           socket.off('messageSeen', handleSeen);
       }
     }, [messages]);
-
-    useEffect(()=>{
-      socket.emit('messageSeen', {me: userData.userId, user: selectedUser});
-      
-    }, [selectedUser]);
-
-    useEffect(() => {
-        const handleStatus = (status) => {
-            if (status.userId) {
-                if (status.userId == selectedUser) {
-                    setUserStatus(status.status);
-                }   
-            }
-            else{
-                setUserStatus(status.status);
-            }
-        };
-
-        const setMessage = (message)=>{
-            setMessages(prev => [...prev, message]);
-        }
-    
-        if (selectedUser) {
-            socket.emit('checkStatus', selectedUser);
-            socket.on('getStatus', handleStatus);
-            socket.on("sendMessage", setMessage)
-        }
-    
-        return () => {
-            socket.off('getStatus', handleStatus);
-            socket.off("sendMessage", setMessage)
-        };
-    }, [selectedUser]);
-
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView();
-      }, [messages]);
-    
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
