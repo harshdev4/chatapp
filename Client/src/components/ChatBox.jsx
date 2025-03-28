@@ -167,7 +167,7 @@ const ChatBox = () => {
       setMessages(prev => [...prev, message]);
       setFile(null);
       setMediaSrc(null);
-  };
+  }; 
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
@@ -229,7 +229,7 @@ const ChatBox = () => {
             <MdPermMedia className='text-[#2d5348]' />
           </button>
           <input ref={messageRef} type="text" name="message" placeholder="Type a message" autoFocus autoComplete="off"
-                 className="w-full p-2 pr-[45px] border border-[#00000067] rounded-[10px] outline-0 bg-[#fff] text-[#000]" />
+                 className="w-full p-2 pl-[45px] pr-[45px] border border-[#00000067] rounded-[10px] outline-0 bg-[#fff] text-[#000]" />
           <button type="submit" className="absolute top-1/2 translate-y-[-50%] right-3 text-xl cursor-pointer p-1">
             <IoMdSend className="text-[#2d5348]" />
           </button>

@@ -54,6 +54,7 @@ const setupSocket = (server)=>{
                         socket.to(socketone).emit('sendMessage', {sender, receiver, message});
                     }
                 })
+                console.log(sender, receiver, message);
                 let isImage = false;
                 let type = "text";
                 let msg = message;
@@ -65,6 +66,7 @@ const setupSocket = (server)=>{
                     const result = await uploadToCloudinary(compressedFile);
                     msg = result.secure_url;
                 }
+                console.log(type);
                 
                 me.socketId.forEach((socketone)=>{
                     if (socketone !== socket.id) {
