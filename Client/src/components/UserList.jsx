@@ -18,9 +18,8 @@ const UserList = () => {
             const obj = {
                 me: msg.sender == userData.userId ? msg.sender : msg.receiver,
                 user: msg.sender == userData.userId ? msg.receiver : msg.sender,
-                message: msg.message.startsWith("https") ? "image" : msg.msg
+                message: msg.message.startsWith("https") ? "image" : msg.message
             }
-    
             setLatestMessage((prev) => {
                 const updatedMessages = prev.filter((m) => m.user !== obj.user);
                 return [...updatedMessages, obj];
@@ -45,7 +44,7 @@ const UserList = () => {
             if (socket.connected) {
                 socket.disconnect();
             }
-            const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/user/logout`,{withCredentials: true});
+            const response = await axios.get(`http://localhost:3000/api/user/logout`,{withCredentials: true});
             if (response.status===200) {
                 const reset = {
                     userId: undefined,

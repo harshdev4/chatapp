@@ -8,6 +8,7 @@ import { LiaCheckDoubleSolid } from "react-icons/lia";
 import toast from 'react-hot-toast';
 import { MdPermMedia } from "react-icons/md";
 import MediaPreview from './MediaPreview';
+import Resizer from 'react-image-file-resizer';
 
 const ChatBox = () => {
     const {selectedUser, userData, setSelectedUser} = useContext(UserContext);
@@ -34,7 +35,7 @@ const ChatBox = () => {
 
         const fetchSelectedUser = async () => {
             try {
-                const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/user/fetchSelectedUser/${selectedUser}`, {withCredentials: true});
+                const response = await axios.get(`http://localhost:3000/api/user/fetchSelectedUser/${selectedUser}`, {withCredentials: true});
                 if (response.status === 200) {
                     setSelectedUserInfo(response.data.user);
                 }
@@ -45,7 +46,7 @@ const ChatBox = () => {
 
         const fetchMessages = async ()=>{
             try {
-                const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/message/fetchMessages?sender=${userData.userId}&receiver=${selectedUser}`, {withCredentials: true});
+                const response = await axios.get(`http://localhost:3000/api/message/fetchMessages?sender=${userData.userId}&receiver=${selectedUser}`, {withCredentials: true});
                 if (response.status === 200) {
                     const allMessages = response.data.allMessages;
                     allMessages.sort((a,b)=> new Date(a.timestamp) - new Date(b.timestamp));
@@ -120,13 +121,28 @@ const ChatBox = () => {
     }
 
     const handleMedia = (e) =>{
-        const file = e.target.files[0];
-        if (!file) {
+        const imgFile = e.target.files[0];
+        if (!imgFile) {
             return;
         }
-        setFile(e.target.files[0]);
-        const profileUrl = URL.createObjectURL(file);
-        setMediaSrc(profileUrl);
+        try {
+          Resizer.imageFileResizer(
+            imgFile,             // the file from input
+            1000,              // max width (adjust as needed)
+            1000,              // max height (adjust as needed)
+            'JPEG',           // output format (can be 'JPEG', 'PNG', etc.)
+            50,               // quality (0-100)
+            0,                // rotation (if needed)
+            (uri) => {        // callback function that receives the output URI
+              setFile(uri);
+            },
+            'base64'          // output type (can be 'base64' or 'blob')
+          );
+        } catch (err) {
+          console.error(err);
+        }
+        // const profileUrl = URL.createObjectURL(file);
+        // setMediaSrc(profileUrl);
     }
 
     const sendFile = () => {
@@ -135,30 +151,27 @@ const ChatBox = () => {
           return;
       }
   
-      const reader = new FileReader();
-      reader.readAsDataURL(file); 
+      // Ensure the correct format
+      const base64Image = `data:image/jpeg;base64,${file.split(',')[1]}`;
   
-      reader.onload = () => {
-          const base64String = reader.result.split(",")[1]; 
-          socket.emit("sendMessage", {
-              sender: userData.userId,
-              receiver: selectedUserInfo.userId,
-              message: {
-                  fileName: file.name,
-                  fileType: file.type,
-                  fileSize: file.size,
-                  fileData: base64String,
-                  type: "image"
-              }
-          });
+      socket.emit("sendMessage", {
+          sender: userData.userId,
+          receiver: selectedUserInfo.userId,
+          message: {
+              fileName: "image.jpg",
+              fileType: "image/jpeg",
+              fileSize: file.length,
+              fileData: base64Image,  // Now it has the MIME type
+              type: "image"
+          }
+      });
   
-          audio.current.play();
-      };
+      audio.current.play();
   
       const message = {
           sender: userData.userId,
           receiver: selectedUserInfo.userId,
-          message: mediaSrc,
+          message: base64Image, // Ensuring correct format
           timestamp: new Date().toISOString(),
           type: "image"
       };
@@ -166,7 +179,9 @@ const ChatBox = () => {
       setMessages(prev => [...prev, message]);
       setFile(null);
       setMediaSrc(null);
-  }; 
+  };
+  
+  
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
@@ -204,7 +219,7 @@ const ChatBox = () => {
       </div>
 
       {/* Message List */}
-      { file ? <MediaPreview mediaSrc={mediaSrc}/> :
+      { file ? <MediaPreview mediaSrc={file}/> :
       <ul className="flex-1 overflow-y-auto p-2 pb-[50px] md:pb-12">
         {messages.map((message, index) => (
           <li key={index} className={`text-white text-[1.1rem] mb-3 flex ${message.sender == userData.userId ? 'justify-end' : 'justify-start'}`}>
@@ -220,7 +235,7 @@ const ChatBox = () => {
       }
 
       {/* Bottom Input Section (Sticky) */}
-      { file && mediaSrc ? <button className='px-[15px] py-[8px] mx-auto cursor-pointer rounded-[12px] text-white bg-[#2d5348] w-[max-content]' onClick={sendFile}>Send</button> :
+      { file ? <button className='px-[15px] py-[8px] mx-auto cursor-pointer rounded-[12px] text-white bg-[#2d5348] w-[max-content]' onClick={sendFile}>Send</button> :
       <div className="fixed sm:sticky bottom-0 w-full bg-[#2d5348] p-[7px]">
         <form className="relative w-full" onSubmit={handleSubmit}>
           <input ref={mediaRef} type="file" name="media" accept="image/*" className='hidden' onChange={handleMedia} />

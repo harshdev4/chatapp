@@ -83,8 +83,7 @@ export const login = async (req, res)=>{
 
 export const fetchUsers = async (req, res) =>{
     try {
-        const users = await User.find({ _id: { $ne: req.user.userId } });
-
+        const users = await User.find({ _id: { $ne: req.user.userId } }).select('-password -timestamp');
         return res.status(200).json({users});
     } catch (error) {
         return res.status(500).json({message: 'Something went wrong', error});

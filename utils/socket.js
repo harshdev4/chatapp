@@ -60,7 +60,11 @@ const setupSocket = (server)=>{
                 if (message.type == "image") {
                     isImage = true;
                     type = "image";
-                    const fileBuffer = Buffer.from(message.fileData, "base64");
+                    const base64Data = message.fileData.split(",")[1]; 
+                    
+                    const fileBuffer = Buffer.from(base64Data, "base64");
+                    console.log(fileBuffer);
+                    
                     const compressedFile = await compressImage(fileBuffer);
                     const result = await uploadToCloudinary(compressedFile);
                     msg = result.secure_url;
@@ -80,7 +84,10 @@ const setupSocket = (server)=>{
                     receiverSocketIds.forEach((receiverSocketId)=>{
                     socket.to(receiverSocketId).emit('receiveMessage', {type, message: msg, sender, receiver});
                 })
+
                 const newMessage = await Message.create({ sender, receiver, message: msg, type, delivered: true});
+                console.log(newMessage);
+                
                 }
                 else{
                     console.log("User is offline, saving message...");

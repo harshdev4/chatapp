@@ -13,7 +13,7 @@ const MessageContextProvider = ({children}) =>{
     const {userData} = useContext(UserContext);
     const fetchLatestMessage = async (receiverId)=>{
         try {
-          const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/message/latestMessage/${receiverId}`, {withCredentials: true});
+          const response = await axios.get(`http://localhost:3000/api/message/latestMessage/${receiverId}`, {withCredentials: true});
           const msg = response.data.message;
           const obj = {
             me: msg.sender == userData.userId ? msg.sender : msg.receiver,
