@@ -3,26 +3,11 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import express from 'express';
 import { generateToken } from "../utils/jwt.js";
-import cloudinary from "../config/cloudinary.js";
+import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
+import { compressImage } from "../utils/compressImage.js";
 
 dotenv.config();
 const SALT_ROUND = parseInt(process.env.SALT_ROUND,10);
-
-const app = express();
-
-const uploadToCloudinary = (buffer) => {
-    return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-            { folder: "chatapp" },
-            (error, result) => {
-                if (error) return reject(error);
-                resolve(result);
-            }
-        );
-        uploadStream.end(buffer);
-    });
-};
-
 
 export const register = async (req, res)=>{
     let {username, name, password} = req.body;
@@ -42,7 +27,8 @@ export const register = async (req, res)=>{
             return res.status(409).json({message: 'Username is already taken'});
         }
         const encrypt_password = await bcrypt.hash(password, SALT_ROUND);
-        const result = await uploadToCloudinary(req.file.buffer);
+        const buffer = await compressImage(req.file.buffer)
+        const result = await uploadToCloudinary(buffer);
         const user = await User.create({username, name, password: encrypt_password, profilePic: result.secure_url});
         const tokenUser = {
             userId: user._id,
@@ -141,11 +127,15 @@ export const uploadProfileImage = async (req, res)=>{
         if (!req.file) {
             return res.status(401).json({message: "No Image Provided"});
         }
-        const result = await uploadToCloudinary(req.file.buffer);
         const userId = req.user.userId;
+        const user = await User.findById(userId);
+        let oldPublicId;
+        if (user.profilePic) oldPublicId = user.profilePic.split('/').pop().split('.')[0]
+        const buffer = await compressImage(req.file.buffer);
+        const result = await uploadToCloudinary(buffer);
+        if (oldPublicId) await cloudinary.uploader.destroy(`chatapp/${oldPublicId}`);
         await User.findByIdAndUpdate(userId,{profilePic: result.secure_url});
-        const user = User.findById(userId);
-        res.status(200).json({userProfile:user.profilePic});
+        res.status(200).json({userProfile:user.result.secure_url});
     } catch (error) {
         return res.status(500).json({message: 'Something went wrong', error});
     }
@@ -159,7 +149,6 @@ export const logout = async (req, res)=>{
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'Strict'
         });
-        // await User.findByIdAndUpdate(userId, {$pull:{socketId: socket}});
         return res.status(200).json({message: 'logout success'});
     } catch (error) {
         return res.status(500).json({message: 'Something went wrong', error});

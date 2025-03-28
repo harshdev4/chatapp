@@ -1,6 +1,8 @@
 import {Server} from 'socket.io';
 import User from '../models/User.js';
 import Message from '../models/Message.js';
+import { compressImage } from './compressImage.js';
+import { uploadToCloudinary } from './uploadToCloudinary.js';
 
 const setupSocket = (server)=>{
     const io = new Server(server, {
@@ -52,30 +54,44 @@ const setupSocket = (server)=>{
                         socket.to(socketone).emit('sendMessage', {sender, receiver, message});
                     }
                 })
+                let isImage = false;
+                let type = "text";
+                let msg = message;
+                if (message.type == "image") {
+                    isImage = true;
+                    type = "image";
+                    const fileBuffer = Buffer.from(message.fileData, "base64");  // ✅ Correct reference
+                    const compressedFile = await compressImage(fileBuffer);
+                    const result = await uploadToCloudinary(compressedFile);
+                    msg = result.secure_url;
+                }
+                
                 me.socketId.forEach((socketone)=>{
                     if (socketone !== socket.id) {
-                        socket.to(socketone).emit('latestSendMessage', {sender, receiver, message});
+                        socket.to(socketone).emit('latestSendMessage', {sender, receiver, msg});
                     }
                     else{
-                        socket.emit('latestSendMessage', {sender, receiver, message});
+                        socket.emit('latestSendMessage', {sender, receiver, msg});
                     }
                 });
                 const user = await User.findById(receiver);
                 const receiverSocketIds = user.socketId;
                 if (receiverSocketIds.length > 0) {
                     receiverSocketIds.forEach((receiverSocketId)=>{
-                    socket.to(receiverSocketId).emit('receiveMessage', {message, sender, receiver});
+
+                    socket.to(receiverSocketId).emit('receiveMessage', {msg, sender, receiver});
                 })
-                const newMessage = await Message.create({ sender, receiver, message, delivered: true});
+                const newMessage = await Message.create({ sender, receiver, message: msg, type, delivered: true});
                 }
                 else{
                     console.log("User is offline, saving message...");
-                    const newMessage = await Message.create({ sender, receiver, message, delivered: false});
+                    const newMessage = await Message.create({ sender, receiver, message: msg, type, delivered: false});
                 }
             } catch (error) {
                 console.error("Error in operations:", error);
             }
         });
+
 
         socket.on('checkStatus', async (userId)=>{
             try {

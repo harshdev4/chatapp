@@ -5,6 +5,7 @@ import axios from 'axios';
 import { getSocket } from './Socket';
 import { FaArrowLeft } from "react-icons/fa";
 import { LiaCheckDoubleSolid } from "react-icons/lia";
+import toast from 'react-hot-toast';
 
 const ChatBox = () => {
     const {selectedUser, userData, setSelectedUser} = useContext(UserContext);
@@ -16,11 +17,15 @@ const ChatBox = () => {
         socketId: undefined
     });
 
+    
     const audio = useRef(new Audio('/sounds/send.mp3'));
+    const [mediaSrc, setMediaSrc] = useState(null);
+    const [file, setFile] = useState(null);
     const [messages, setMessages] = useState([]);
     const [userStatus, setUserStatus] = useState([]);
     const messageRef = useRef();
     const messagesEndRef = useRef(null);
+    const mediaRef = useRef();
 
     const socket = getSocket();
     
@@ -109,6 +114,61 @@ const ChatBox = () => {
       }
     }, [messages]);
 
+    const openMedia = () =>{
+      mediaRef.current.click();
+    }
+
+    const handleMedia = (e) =>{
+        const file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+        setFile(e.target.files[0]);
+        const profileUrl = URL.createObjectURL(file);
+        setMediaSrc(profileUrl);
+    }
+
+    const sendFile = () => {
+      if (!file) {
+          toast.error("No file selected");
+          return;
+      }
+  
+      const reader = new FileReader();
+      reader.readAsDataURL(file); 
+  
+      reader.onload = () => {
+          const base64String = reader.result.split(",")[1]; 
+  
+          console.log("Emitting sendMessage event for image...");
+          socket.emit("sendMessage", {
+              sender: userData.userId,
+              receiver: selectedUserInfo.userId,
+              message: {
+                  fileName: file.name,
+                  fileType: file.type,
+                  fileSize: file.size,
+                  fileData: base64String,
+                  type: "image"
+              }
+          });
+  
+          audio.current.play();
+      };
+  
+      const message = {
+          sender: userData.userId,
+          receiver: selectedUserInfo.userId,
+          message: mediaSrc,
+          timestamp: new Date().toISOString(),
+          type: "image"
+      };
+  
+      setMessages(prev => [...prev, message]);
+      setFile(null);
+      setMediaSrc(null);
+  };
+
     const handleSubmit = async (e)=>{
         e.preventDefault();
         if (!messageRef.current.value.trim()) return;
@@ -117,6 +177,7 @@ const ChatBox = () => {
             receiver: selectedUserInfo.userId,
             message: messageRef.current.value.trim(),
             timestamp: new Date().toISOString(),
+            type: "text"
         }
         
         socket.emit('sendMessage', message);
@@ -144,20 +205,29 @@ const ChatBox = () => {
       </div>
 
       {/* Message List */}
+      { file ? <MediaPreview mediaSrc={mediaSrc}/> :
       <ul className="flex-1 overflow-y-auto p-2 pb-[50px] md:pb-12">
         {messages.map((message, index) => (
           <li key={index} className={`text-white text-[1.1rem] mb-3 flex ${message.sender == userData.userId ? 'justify-end' : 'justify-start'}`}>
-            <span className={`grid grid-cols-[minmax(20px,100%)_15px] gap-2 items-end max-w-[50%] break-words py-1 px-3 rounded-[12px] ${message.sender == userData.userId ? 'bg-[#358d64]' : 'text-left bg-[#777373]'}`}>
+            {message.type === "text" ? <span className={`grid grid-cols-[minmax(20px,100%)_15px] gap-2 items-end max-w-[50%] break-words py-1 px-3 rounded-[12px] ${message.sender == userData.userId ? 'bg-[#358d64]' : 'text-left bg-[#777373]'}`}>
             {message.message} {message.sender == userData.userId && message.seen && <LiaCheckDoubleSolid className='text-[15px] text-[#7acff9] font-bold'/>}
             </span>
+            : <span className='relative'><img src={message.message} alt="message-image" loading='lazy' className='max-w-[250px] max-h-[200px] object-cover rounded-[15px]'/>{message.sender == userData.userId && message.seen && <LiaCheckDoubleSolid className='absolute right-3 bottom-1 text-[15px] text-[#6ebfe7] font-bold'/>}</span>
+            }
           </li>
         ))}
         <div ref={messagesEndRef}></div>
       </ul>
+      }
 
       {/* Bottom Input Section (Sticky) */}
+      { file && mediaSrc ? <button className='px-[15px] py-[8px] mx-auto cursor-pointer rounded-[12px] text-white bg-[#2d5348] w-[max-content]' onClick={sendFile}>Send</button> :
       <div className="fixed sm:sticky bottom-0 w-full bg-[#2d5348] p-[7px]">
         <form className="relative w-full" onSubmit={handleSubmit}>
+          <input ref={mediaRef} type="file" name="media" accept="image/*" className='hidden' onChange={handleMedia} />
+          <button type='button' className="absolute top-1/2 translate-y-[-50%] left-3 text-xl cursor-pointer p-1" onClick={openMedia}>
+            <MdPermMedia className='text-[#2d5348]' />
+          </button>
           <input ref={messageRef} type="text" name="message" placeholder="Type a message" autoFocus autoComplete="off"
                  className="w-full p-2 pr-[45px] border border-[#00000067] rounded-[10px] outline-0 bg-[#fff] text-[#000]" />
           <button type="submit" className="absolute top-1/2 translate-y-[-50%] right-3 text-xl cursor-pointer p-1">
@@ -165,6 +235,7 @@ const ChatBox = () => {
           </button>
         </form>
       </div>
+      }
     </>
   )}
 </div>
