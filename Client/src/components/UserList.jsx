@@ -18,7 +18,7 @@ const UserList = () => {
             const obj = {
                 me: msg.sender == userData.userId ? msg.sender : msg.receiver,
                 user: msg.sender == userData.userId ? msg.receiver : msg.sender,
-                message: msg.msg
+                message: msg.message.startsWith("https") ? "image" : msg.msg
             }
     
             setLatestMessage((prev) => {

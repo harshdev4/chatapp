@@ -18,7 +18,7 @@ const MessageContextProvider = ({children}) =>{
           const obj = {
             me: msg.sender == userData.userId ? msg.sender : msg.receiver,
             user: msg.sender == userData.userId ? msg.receiver : msg.sender,
-            message: msg.message.startsWith("https") ? "image" : msg.message
+            message: msg.message && msg.message.startsWith("https") ? "image" : msg.message
           }
 
           setLatestMessage((prev) => {

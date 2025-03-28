@@ -54,34 +54,31 @@ const setupSocket = (server)=>{
                         socket.to(socketone).emit('sendMessage', {sender, receiver, message});
                     }
                 })
-                console.log(sender, receiver, message);
                 let isImage = false;
                 let type = "text";
                 let msg = message;
                 if (message.type == "image") {
                     isImage = true;
                     type = "image";
-                    const fileBuffer = Buffer.from(message.fileData, "base64");  // ✅ Correct reference
+                    const fileBuffer = Buffer.from(message.fileData, "base64");
                     const compressedFile = await compressImage(fileBuffer);
                     const result = await uploadToCloudinary(compressedFile);
                     msg = result.secure_url;
                 }
-                console.log(type);
                 
                 me.socketId.forEach((socketone)=>{
                     if (socketone !== socket.id) {
-                        socket.to(socketone).emit('latestSendMessage', {sender, receiver, msg});
+                        socket.to(socketone).emit('latestSendMessage', {sender, receiver, message: msg});
                     }
                     else{
-                        socket.emit('latestSendMessage', {sender, receiver, msg});
+                        socket.emit('latestSendMessage', {sender, receiver, message: msg});
                     }
                 });
                 const user = await User.findById(receiver);
                 const receiverSocketIds = user.socketId;
                 if (receiverSocketIds.length > 0) {
                     receiverSocketIds.forEach((receiverSocketId)=>{
-
-                    socket.to(receiverSocketId).emit('receiveMessage', {msg, sender, receiver});
+                    socket.to(receiverSocketId).emit('receiveMessage', {type, message: msg, sender, receiver});
                 })
                 const newMessage = await Message.create({ sender, receiver, message: msg, type, delivered: true});
                 }

@@ -19,12 +19,11 @@ const ChatBox = () => {
         socketId: undefined
     });
 
-    
     const audio = useRef(new Audio('/sounds/send.mp3'));
     const [mediaSrc, setMediaSrc] = useState(null);
     const [file, setFile] = useState(null);
     const [messages, setMessages] = useState([]);
-    const [userStatus, setUserStatus] = useState([]);
+    const [userStatus, setUserStatus] = useState();
     const messageRef = useRef();
     const messagesEndRef = useRef(null);
     const mediaRef = useRef();
