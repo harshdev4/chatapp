@@ -6,6 +6,8 @@ import { getSocket } from './Socket';
 import { FaArrowLeft } from "react-icons/fa";
 import { LiaCheckDoubleSolid } from "react-icons/lia";
 import toast from 'react-hot-toast';
+import { MdPermMedia } from "react-icons/md";
+import MediaPreview from './MediaPreview';
 
 const ChatBox = () => {
     const {selectedUser, userData, setSelectedUser} = useContext(UserContext);
@@ -139,8 +141,6 @@ const ChatBox = () => {
   
       reader.onload = () => {
           const base64String = reader.result.split(",")[1]; 
-  
-          console.log("Emitting sendMessage event for image...");
           socket.emit("sendMessage", {
               sender: userData.userId,
               receiver: selectedUserInfo.userId,
