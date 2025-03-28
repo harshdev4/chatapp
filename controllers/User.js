@@ -5,6 +5,7 @@ import express from 'express';
 import { generateToken } from "../utils/jwt.js";
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
 import { compressImage } from "../utils/compressImage.js";
+import cloudinary from "../config/cloudinary.js";
 
 dotenv.config();
 const SALT_ROUND = parseInt(process.env.SALT_ROUND,10);
@@ -134,8 +135,9 @@ export const uploadProfileImage = async (req, res)=>{
         const result = await uploadToCloudinary(buffer);
         if (oldPublicId) await cloudinary.uploader.destroy(`chatapp/${oldPublicId}`);
         await User.findByIdAndUpdate(userId,{profilePic: result.secure_url});
-        res.status(200).json({userProfile:user.result.secure_url});
+        res.status(200).json({userProfile: result.secure_url});
     } catch (error) {
+        console.log(error);
         return res.status(500).json({message: 'Something went wrong', error});
     }
 }

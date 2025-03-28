@@ -44,7 +44,7 @@ const UserList = () => {
             if (socket.connected) {
                 socket.disconnect();
             }
-            const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/user/logout`,{withCredentials: true});
+            const response = await axios.get(`http://localhost:3000/api/user/logout`,{withCredentials: true});
             if (response.status===200) {
                 const reset = {
                     userId: undefined,

@@ -37,7 +37,7 @@ const Login = () => {
     formData.append("password", userdata.password);
     try {
       setIsLoading(true);
-      const response = await axios.post("https://chatapp-1ox3.onrender.com/api/user/login", formData, {
+      const response = await axios.post("http://localhost:3000/api/user/login", formData, {
         headers: {
           "Content-Type": "application/json",
         },

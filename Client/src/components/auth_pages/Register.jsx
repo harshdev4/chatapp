@@ -64,7 +64,7 @@ const Register = () => {
     formData.append("name", userdata.name);
     formData.append("password", userdata.password);
     try {
-      const response = await axios.post("https://chatapp-1ox3.onrender.com/api/user/register", formData, {withCredentials: true});
+      const response = await axios.post("http://localhost:3000/api/user/register", formData, {withCredentials: true});
       if (response.status === 200) {
         const user = response.data.user;
         userContext.setUserData(user);
