@@ -114,7 +114,7 @@ const ChatBox = () => {
     return () => {
       socket.off('messageSeen', handleSeen);
     }
-  }, [messages]);
+  }, [messages, messagesEndRef.current]);
 
   const openMedia = () => {
     mediaRef.current.click();
