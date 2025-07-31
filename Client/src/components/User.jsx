@@ -18,7 +18,7 @@ const User = (props) => {
    <>
     <div ref={userProfile} className={`border-t-1 border-[#cdc9c9] grid grid-cols-[1fr_4fr] gap-2 h-[70px] items-center md:mb-0 cursor-pointer transition-colors delay-50 px-2 ${selectedUser == props.userId && 'bg-gray-200'}  hover:bg-gray-200`}  onClick={()=> handleUserSelection(props.userId)}>
       <div className="w-[3em] h-[3em] rounded-[50%] border-1">
-        <img src={props.userImage} alt="userImage" className='w-[100%] h-[100%] object-center rounded-[50%]'/>
+        <img src={props.userImage} alt="userImage" className='w-[100%] h-[100%] object-contain object-center rounded-[50%]'/>
       </div>
       <div className='grid py-3'>
         <h3 className='font-bold'>{props.name}</h3>
