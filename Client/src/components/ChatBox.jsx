@@ -201,11 +201,11 @@ const ChatBox = () => {
   }
 
   return (
-    <div className="flex felx-col w-full h-svh bg-[#646e6c1c]">
+    <div className="flex flex-col w-full h-svh bg-[#646e6c1c]">
       {selectedUserInfo.username && (
         <>
           {/* Top Profile Section */}
-          <div className="fixed top-0 left-0 w-full h-[60px] flex items-center space-x-3 bg-[#2d5348] text-white p-2 shadow-sm shadow-[#302f2fbe] z-5">
+          <div className="sticky top-0 left-0 w-full h-[60px] flex items-center space-x-3 bg-[#2d5348] text-white p-2 shadow-sm shadow-[#302f2fbe] z-5">
             <FaArrowLeft className="block sm:hidden" onClick={() => setSelectedUser()} />
             <div className="rounded-[50%] w-[50px] h-[50px] border border-[#00000036]">
               <img className="rounded-[50%] w-full h-full object-cover"
@@ -220,7 +220,7 @@ const ChatBox = () => {
 
           {/* Message List */}
           {file ? <MediaPreview mediaSrc={file} /> :
-            <ul className="h-full overflow-y-auto px-2 py-[15px]">
+            <ul className="flex-1 overflow-y-auto px-2 pt-[15px] pb-[60px] sm:py-[15px]">
               {messages.map((message, index) => (
                 <li key={index} className={`text-white text-[1.1rem] mb-3 flex ${message.sender == userData.userId ? 'justify-end' : 'justify-start'}`}>
                   {message.type === "text" ? <span className={`grid grid-cols-[minmax(20px,100%)_15px] gap-2 items-end max-w-[50%] break-words py-1 px-3 rounded-[12px] ${message.sender == userData.userId ? 'bg-[#358d64]' : 'text-left bg-[#777373]'}`}>
