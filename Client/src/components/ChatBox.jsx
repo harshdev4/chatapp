@@ -201,11 +201,11 @@ const ChatBox = () => {
   }
 
   return (
-    <div className="flex flex-col w-full h-svh bg-[#646e6c1c]">
+    <div className="flex felx-col w-full h-svh bg-[#646e6c1c]">
       {selectedUserInfo.username && (
         <>
           {/* Top Profile Section */}
-          <div className="sticky top-0 w-full flex items-center space-x-3 bg-[#2d5348] text-white p-2 shadow-md shadow-[#302f2fbe] z-10">
+          <div className="fixed top-0 left-0 w-full h-[60px] flex items-center space-x-3 bg-[#2d5348] text-white p-2 shadow-sm shadow-[#302f2fbe] z-5">
             <FaArrowLeft className="block sm:hidden" onClick={() => setSelectedUser()} />
             <div className="rounded-[50%] w-[50px] h-[50px] border border-[#00000036]">
               <img className="rounded-[50%] w-full h-full object-cover"
@@ -220,7 +220,7 @@ const ChatBox = () => {
 
           {/* Message List */}
           {file ? <MediaPreview mediaSrc={file} /> :
-            <ul className="flex-1 overflow-y-auto p-2 pb-[50px] md:pb-12">
+            <ul className="h-full overflow-y-auto px-2 py-[15px]">
               {messages.map((message, index) => (
                 <li key={index} className={`text-white text-[1.1rem] mb-3 flex ${message.sender == userData.userId ? 'justify-end' : 'justify-start'}`}>
                   {message.type === "text" ? <span className={`grid grid-cols-[minmax(20px,100%)_15px] gap-2 items-end max-w-[50%] break-words py-1 px-3 rounded-[12px] ${message.sender == userData.userId ? 'bg-[#358d64]' : 'text-left bg-[#777373]'}`}>
@@ -236,7 +236,7 @@ const ChatBox = () => {
 
           {/* Bottom Input Section (Sticky) */}
           {file ? <button className='px-[15px] py-[8px] mx-auto cursor-pointer rounded-[12px] text-white bg-[#2d5348] w-[max-content]' onClick={sendFile}>Send</button> :
-            <div className="fixed sm:sticky bottom-0 w-full bg-[#2d5348] p-[7px]">
+            <div className="fixed sm:sticky bottom-0 w-full h-[55px] bg-[#2d5348] px-[7px] flex items-center">
               <form className="relative w-full" onSubmit={handleSubmit}>
                 <input ref={mediaRef} type="file" name="media" accept="image/*" className='hidden' onChange={handleMedia} />
                 <button type='button' className="absolute top-1/2 translate-y-[-50%] left-3 text-xl cursor-pointer p-1" onClick={openMedia}>
