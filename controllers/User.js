@@ -1,7 +1,6 @@
 import User from "../models/User.js";
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import express from 'express';
 import { generateToken } from "../utils/jwt.js";
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
 import { compressImage } from "../utils/compressImage.js";

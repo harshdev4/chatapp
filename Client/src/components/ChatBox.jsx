@@ -35,7 +35,7 @@ const ChatBox = () => {
 
         const fetchSelectedUser = async () => {
             try {
-                const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/user/fetchSelectedUser/${selectedUser}`, {withCredentials: true});
+                const response = await axios.get(`http://localhost:3000/api/user/fetchSelectedUser/${selectedUser}`, {withCredentials: true});
                 if (response.status === 200) {
                     setSelectedUserInfo(response.data.user);
                 }
@@ -46,7 +46,7 @@ const ChatBox = () => {
 
         const fetchMessages = async ()=>{
             try {
-                const response = await axios.get(`https://chatapp-1ox3.onrender.com/api/message/fetchMessages?sender=${userData.userId}&receiver=${selectedUser}`, {withCredentials: true});
+                const response = await axios.get(`http://localhost:3000/api/message/fetchMessages?sender=${userData.userId}&receiver=${selectedUser}`, {withCredentials: true});
                 if (response.status === 200) {
                     const allMessages = response.data.allMessages;
                     allMessages.sort((a,b)=> new Date(a.timestamp) - new Date(b.timestamp));
@@ -209,7 +209,7 @@ const ChatBox = () => {
         <FaArrowLeft className="block sm:hidden" onClick={() => setSelectedUser()} />
         <div className="rounded-[50%] w-[50px] h-[50px] border border-[#00000036]">
           <img className="rounded-[50%] w-full h-full object-cover" 
-               src={`${selectedUserInfo.profilePic.slice(0, 50)}w_100,h_100/${selectedUserInfo.profilePic.slice(50,)}`} 
+               src={`${selectedUserInfo.profilePic.slice(0, 50)}w_100/${selectedUserInfo.profilePic.slice(50,)}`} 
                alt="selectedUser" />
         </div>
         <div>
@@ -242,7 +242,7 @@ const ChatBox = () => {
           <button type='button' className="absolute top-1/2 translate-y-[-50%] left-3 text-xl cursor-pointer p-1" onClick={openMedia}>
             <MdPermMedia className='text-[#2d5348]' />
           </button>
-          <input ref={messageRef} type="text" name="message" placeholder="Type a message" autoFocus autoComplete="off"
+          <input ref={messageRef} type="text" name="message" placeholder="Type a message" autoComplete="off"
                  className="w-full p-2 pl-[45px] pr-[45px] border border-[#00000067] rounded-[10px] outline-0 bg-[#fff] text-[#000]" />
           <button type="submit" className="absolute top-1/2 translate-y-[-50%] right-3 text-xl cursor-pointer p-1">
             <IoMdSend className="text-[#2d5348]" />

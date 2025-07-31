@@ -34,7 +34,7 @@ const SettingPage = () => {
     const uploadProfileImage = async () =>{
         setIsLoading(true);
         try {
-            const response = await axios.post('https://chatapp-1ox3.onrender.com/api/user/uploadProfileImage', formData,
+            const response = await axios.post('http://localhost:3000/api/user/uploadProfileImage', formData,
                 { withCredentials: true});
             setUserData((prev)=> {
                 return {...prev, profilePic: response.data.userProfile}
