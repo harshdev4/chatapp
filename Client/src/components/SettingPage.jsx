@@ -65,7 +65,7 @@ const SettingPage = () => {
   return (<>
     {isUser && userData.username && userData.name && <div className='w-full h-[100svh] flex justify-center items-center sm:justify-normal'>
         {isLoading && <div className="absolute z-10 top-[50%] left-[50%] translate-[-50%] w-[70px] h-[70px] border-b-3 border-l-3 rounded-[50%] animate-spin"> </div> }
-        <div className='grid grid-rows-[1fr_max-content_1fr_1fr_1fr] gap-[25px] w-[90%] m-auto sm:w-[500px] rounded-[12px] shadow-[0_0_7px_black] p-4 bg-white'>
+        <div className='grid grid-rows-[1fr_max-content_1fr_1fr_1fr] gap-[25px] w-[90%] m-auto sm:w-[500px] rounded-[12px] shadow-[0_0_5px_#00000052] p-4 bg-white'>
             <div className='flex justify-center items-center gap-2.5'>
                 <TbTriangleSquareCircle size={30}/>
                 <h1 className='text-center text-4xl font-medium'>Profile</h1>
@@ -76,7 +76,7 @@ const SettingPage = () => {
                 <div className='relative w-32 h-32 rounded-full border-2 border-[#949191] shadow-[0_0_3px_black_inset] overflow-hidden'>
                     <input ref={fileRef} type="file" name="profilePic" className='hidden' onChange={handleSelectFile}/>
                     <img src={profileImage ? profileImage : `${userData.profilePic.slice(0, 50)}w_150/${userData.profilePic.slice(50,)}`} alt="profile" className='rounded-full w-full h-full object-cover'/>
-                    <div className='absolute bottom-4 right-5 bg-[#0000003b] rounded-full p-1'>
+                    <div className='absolute bottom-2.5 right-5 bg-[#0000003b] rounded-full p-1'>
                         <FaCamera className='shadow-md text-[#ffffff] cursor-pointer' size={20} onClick={()=>fileRef.current.click()}/>
                     </div>
                 </div>
