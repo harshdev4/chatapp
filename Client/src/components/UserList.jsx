@@ -73,7 +73,7 @@ const UserList = () => {
             <div className='relative group'>
                 <IoMdSettings className='text-[1.5rem] cursor-pointer' onClick={()=> navigate('/setting')}/>
                 <span className='hidden group-hover:block absolute translate-x-[-100%] top-5 p-[5px] bg-[#979494] text-white rounded-[7px]'>
-                    Settings</span>
+                    Profile</span>
             </div>
             <div className='relative group'>
                 <IoIosLogOut className='text-[1.5rem] cursor-pointer' onClick={handleLogout}/>
