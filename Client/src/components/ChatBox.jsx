@@ -201,7 +201,7 @@ const ChatBox = () => {
   }
 
   return (
-    <div className="flex flex-col w-full h-svh bg-[#646e6c1c]">
+    <div className="flex flex-col w-full">
       {selectedUserInfo.username && (
         <>
           {/* Top Profile Section */}

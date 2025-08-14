@@ -55,7 +55,7 @@ const HomePage = () => {
             <div className={`${!selectedUser ? "block" : "hidden"} sm:block`}>
               <UserList></UserList>            
             </div>
-            <div className={`${!selectedUser ? "hidden" : "block"} sm:block`}>
+            <div className={`${!selectedUser ? "hidden" : "block"} sm:block bg-[#fdfdfd]`}>
             {!selectedUser ? <EchoWindow></EchoWindow> : <ChatBox/>}
             </div>
         </div>
