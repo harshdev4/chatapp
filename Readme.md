@@ -50,7 +50,7 @@ Make sure you have the following installed:
    Create a `.env` file in the root directory and configure the following:
 
    ```env
-   MONGO_URI=your_mongodb_connection_string
+   MONGODB_URI=your_mongodb_connection_string
    SALT_ROUND = your_salt_round
    SECRET_KEY = your_secret_key
    PORT = 3000

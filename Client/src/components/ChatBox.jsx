@@ -236,7 +236,7 @@ const ChatBox = () => {
 
           {/* Bottom Input Section (Sticky) */}
           {file ? <button className='px-[15px] py-[8px] mx-auto cursor-pointer rounded-[12px] text-white bg-[#2d5348] w-[max-content]' onClick={sendFile}>Send</button> :
-            <div className="fixed sm:sticky bottom-0 w-full h-[55px] bg-[#2d5348] px-[7px] flex items-center">
+            <div className="fixed bottom-0 w-[71%] h-[55px] bg-[#2d5348] px-[7px] flex items-center">
               <form className="relative w-full" onSubmit={handleSubmit}>
                 <input ref={mediaRef} type="file" name="media" accept="image/*" className='hidden' onChange={handleMedia} />
                 <button type='button' className="absolute top-1/2 translate-y-[-50%] left-3 text-xl cursor-pointer p-1" onClick={openMedia}>

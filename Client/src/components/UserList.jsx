@@ -65,7 +65,7 @@ const UserList = () => {
     
   return (
     <>
-   <div className='bg-[#ebebebb5] overflow-y-scroll py-2 border-r-1 border-[#7e7d7d] h-full'>
+   <div className='bg-[#fdfdfd] overflow-y-scroll py-2 border-r-1 border-[#7e7d7d] h-full'>
    {isLoading && <div className="absolute z-10 top-[50%] left-[50%] translate-[-50%] w-[70px] h-[70px] border-b-3 border-l-3 rounded-[50%] animate-spin"> </div> }
     <div className='flex justify-between items-center px-2 mb-5'>
         <h1 className='text-2xl font-bold'>Chats</h1>
