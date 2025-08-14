@@ -51,8 +51,8 @@ const HomePage = () => {
 
   return (
     <>{!isChecking && userData.userId &&
-        <div className="grid grid-cols-1 min-h-[100vh] sm:grid-cols-[2fr_5fr]">
-            <div className={`${!selectedUser ? "block" : "hidden"} sm:block`}>
+        <div>
+            <div className={`fixed left-0 h-full z-10 w-full sm:w-[29%] ${!selectedUser ? "block" : "hidden"} sm:block`}>
               <UserList></UserList>            
             </div>
             <div className={`${!selectedUser ? "hidden" : "block"} sm:block bg-[#fdfdfd]`}>
